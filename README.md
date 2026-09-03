@@ -49,4 +49,15 @@ How to use
 
 ![](https://staticdelivery.nexusmods.com/mods/1303/images/51515/51515-1788309170-512814675.png)
 
-## Source Code
+Versions
+- 0.1.0
+  - First release!
+- 0.2.0
+  - Dynamic In-Game Backgrounds: Capture live backgrounds directly from your game world using the new free-camera selector menu (F8).
+  - Synchronized Clothes & Directional Frames: Fully fixed all clothing layers (shirts, pants, hats, boots) across all character facing directions and animation frames.
+  - HUD Welcome Notification: In-game prompt on save load reminding players to press F8 to customize their Discord Rich Presence.
+  - Improved Companion & Pet Rendering: Enhanced positioning, scaling, and floating emotes for spouses, multiplayer partners, pets, and horses.
+  - Performance & Asset Optimization: Removed obsolete static background files, optimized image caching with SHA-256, and added instant layout hot-reloading.
+  - Modernized Architecture: Restructured codebase to community standards and unified assembly/namespaces to StardewPresence.
+
+![](https://staticdelivery.nexusmods.com/mods/1303/images/51515/51515-1788309170-512814675.png)
