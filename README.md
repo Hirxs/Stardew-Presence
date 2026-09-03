@@ -12,8 +12,8 @@ And all this without requiring dependencies!, This mod also includes features su
 
 [My Twitter/X](https://x.com/HyrxsMC)  |  [My Discord Server :3](https://discord.gg/eSZmgX8usS)
 
-![](https://staticdelivery.nexusmods.com/mods/1303/images/51515/51515-1788307580-37793147.png)\
- Features
+![](https://staticdelivery.nexusmods.com/mods/1303/images/51515/51515-1788307580-37793147.png)
+## Features
 
 -   Dynamic portraits of your farmer with your exact clothes, hats, and seasonal backgrounds
 -   Display your spouse, pet, and horse together in real-time
@@ -31,8 +31,8 @@ And all this without requiring dependencies!, This mod also includes features su
 
 ![](https://staticdelivery.nexusmods.com/mods/1303/images/51515/51515-1788309818-1569739481.png)
 
-![](https://staticdelivery.nexusmods.com/mods/1303/images/51515/51515-1788309022-132731870.png)\
-How to use
+![](https://staticdelivery.nexusmods.com/mods/1303/images/51515/51515-1788309022-132731870.png)
+## How to use
 
 -   Press F8 anywhere in-game to open the Visual Editor
 -   Switch between the Player, Spouse, and Pet tabs at the top
@@ -49,17 +49,21 @@ How to use
 
 ![](https://staticdelivery.nexusmods.com/mods/1303/images/51515/51515-1788309170-512814675.png)
 
-Versions
-- 0.1.0:
-  - Initial version
+## Installation
+- Install the latest version of SMAPI
+- Download the mod in "releases" or https://www.nexusmods.com/stardewvalley/mods/51515
+- Unzip/copy the mod folder into Stardew Valley/Mods. Run the game using SMAPI
+
+![](https://staticdelivery.nexusmods.com/mods/1303/images/51515/51515-1788309170-512814675.png)
+## Versions
+- 0.1.0
+  - First release!
 - 0.2.0:
   - Added dynamic in-game map background capture with free-camera selector (F8)
   - Added in-game welcome notification on save load to customize Discord RPC
   - Fixed clothing and accessories not matching character facing directions and animation frames
   - Improved companion and pet rendering, scaling, and floating emotes
-  - Added live hot-reload support for UI layout configuration
   - Optimized image generation and SHA-256 caching to reduce bandwidth
   - Removed obsolete static background assets
-  - Restructured project architecture and namespaces to StardewPresence
 
 ![](https://staticdelivery.nexusmods.com/mods/1303/images/51515/51515-1788309170-512814675.png)
