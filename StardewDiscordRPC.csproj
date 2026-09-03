@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>StardewDiscordRPC</AssemblyName>
+    <RootNamespace>StardewDiscordRPC</RootNamespace>
+    <Version>0.2.0</Version>
+    <Authors>Hyris</Authors>
+    <PlatformTarget>x64</PlatformTarget>
+    
+    <!-- Test Modpack Deployment Path -->
+    <ModDeployPath>C:\Users\ale_y\curseforge\stardew-valley\modpacks\Test\mods\$(AssemblyName)</ModDeployPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="StardewModdingAPI">
+      <HintPath>lib\StardewModdingAPI.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="SMAPI.Toolkit.CoreInterfaces">
+      <HintPath>lib\SMAPI.Toolkit.CoreInterfaces.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="StardewValley">
+      <HintPath>lib\Stardew Valley.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="MonoGame.Framework">
+      <HintPath>lib\MonoGame.Framework.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="xTile">
+      <HintPath>lib\xTile.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="scratch\**" />
+    <None Remove="scratch\**" />
+    <Compile Remove="scripts\**" />
+    <None Remove="scripts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="manifest.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="i18n\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="assets\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <ItemGroup>
+      <ModFiles Include="$(TargetDir)**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ModFiles)" DestinationFolder="C:\Users\ale_y\curseforge\stardew-valley\modpacks\Test\mods\$(AssemblyName)\%(RecursiveDir)" SkipUnchangedFiles="true" ContinueOnError="true" />
+    <Copy SourceFiles="@(ModFiles)" DestinationFolder="C:\Users\ale_y\curseforge\stardew-valley\modpacks\Everything Dew\mods\$(AssemblyName)\%(RecursiveDir)" SkipUnchangedFiles="true" ContinueOnError="true" Condition="Exists('C:\Users\ale_y\curseforge\stardew-valley\modpacks\Everything Dew\mods\$(AssemblyName)')" />
+  </Target>
+
+</Project>

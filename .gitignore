@@ -1,0 +1,19 @@
+## Build and output directories
+bin/
+obj/
+
+## Visual Studio / IDE files
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Distribution artifacts
+*.zip
+current_farmer.png
+
+## System files
+.DS_Store
+Thumbs.db

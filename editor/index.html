@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Stardew Presence — Visual Portrait & Config Editor</title>
+  <style>
+    :root {
+      --bg: #1e1a17;
+      --card-bg: #2b241e;
+      --panel-border: #4d3a2a;
+      --accent: #f7a440;
+      --accent-hover: #ffb85d;
+      --text: #f0e6d6;
+      --text-dim: #a69988;
+      --btn-wood: #784824;
+      --btn-wood-hover: #965a2d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      font-size: 26px;
+      color: var(--accent);
+      text-shadow: 2px 2px 0 #000;
+    }
+
+    header p {
+      color: var(--text-dim);
+      font-size: 14px;
+    }
+
+    .main-container {
+      display: flex;
+      flex-direction: row;
+      gap: 24px;
+      max-width: 1200px;
+      width: 100%;
+      background: var(--card-bg);
+      border: 3px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+
+    .canvas-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      border: 4px solid #b87834;
+      border-radius: 8px;
+      background: #000;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+      width: 512px;
+      height: 512px;
+    }
+
+    canvas {
+      image-rendering: pixelated;
+      width: 512px;
+      height: 512px;
+      display: block;
+      cursor: crosshair;
+    }
+
+    .canvas-hint {
+      font-size: 12px;
+      color: var(--text-dim);
+      text-align: center;
+    }
+
+    .controls-section {
+      flex: 1.2;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 700px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid var(--panel-border);
+      padding-bottom: 8px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px 16px;
+      background: #3a2e24;
+      border: 2px solid var(--panel-border);
+      color: var(--text);
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #000;
+      border-color: #ffd285;
+    }
+
+    .panel {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .panel.active {
+      display: flex;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: #342a22;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--panel-border);
+    }
+
+    .field-group-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--accent);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .row label {
+      flex: 1.2;
+      font-size: 13px;
+    }
+
+    .row input[type="range"] {
+      flex: 2;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    .row input[type="number"], .row select {
+      flex: 1;
+      background: #1e1712;
+      border: 1px solid var(--panel-border);
+      color: #fff;
+      padding: 6px 8px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .actions-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 12px;
+      background: var(--btn-wood);
+      color: #fff;
+      font-weight: bold;
+      border: 2px solid #b87834;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .action-btn:hover {
+      background: var(--btn-wood-hover);
+    }
+
+    .action-btn.primary {
+      background: #3a7a28;
+      border-color: #5cd041;
+    }
+
+    .action-btn.primary:hover {
+      background: #489932;
+    }
+
+    textarea {
+      width: 100%;
+      height: 90px;
+      background: #16120e;
+      border: 1px solid var(--panel-border);
+      color: #79d479;
+      font-family: monospace;
+      font-size: 12px;
+      padding: 8px;
+      border-radius: 6px;
+      resize: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Stardew Presence — Visual Portrait & Emote Editor</h1>
+    <p>Arrastra los personajes y emotes con el mouse o usa los controles deslizantes. Los cambios se reflejan en tiempo real.</p>
+  </header>
+
+  <div class="main-container">
+    
+    <!-- CANVAS PREVIEW -->
+    <div class="canvas-section">
+      <div class="canvas-wrapper">
+        <canvas id="portraitCanvas" width="256" height="256"></canvas>
+      </div>
+      <div class="canvas-hint">
+        💡 <b>Click y Arrastre:</b> Puedes arrastrar al Jugador, Acompañante o los Emotes directamente en la imagen.
+      </div>
+      
+      <div class="field-group" style="width: 100%;">
+        <div class="row">
+          <label>Fondo de Estación:</label>
+          <select id="seasonSelect" onchange="updateRender()">
+            <option value="fall">Otoño (Fall)</option>
+            <option value="spring">Primavera (Spring)</option>
+            <option value="summer">Verano (Summer)</option>
+            <option value="winter">Invierno (Winter)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS TABS -->
+    <div class="controls-section">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('playerTab', this)">🧑 Jugador (Player)</button>
+        <button class="tab-btn" onclick="switchTab('companionTab', this)">💖 Acompañante (Spouse/Pet)</button>
+        <button class="tab-btn" onclick="switchTab('jsonTab', this)">📋 Exportar JSON</button>
+      </div>
+
+      <!-- PLAYER TAB -->
+      <div id="playerTab" class="panel active">
+        <div class="field-group">
+          <div class="field-group-title">Posición del Jugador</div>
+          <div class="row">
+            <label>Offset X:</label>
+            <input type="range" id="farmerX" min="-80" max="80" step="0.5" value="0" oninput="syncVal('farmerX')">
+            <input type="number" id="farmerX_num" value="0" step="0.5" oninput="syncRange('farmerX')">
+          </div>
+          <div class="row">
+            <label>Offset Y:</label>
+            <input type="range" id="farmerY" min="-60" max="60" step="0.5" value="0" oninput="syncVal('farmerY')">
+            <input type="number" id="farmerY_num" value="0" step="0.5" oninput="syncRange('farmerY')">
+          </div>
+          <div class="row">
+            <label>Escala (Scale):</label>
+            <input type="range" id="farmerScale" min="1" max="5" step="0.1" value="2.3" oninput="syncVal('farmerScale')">
+            <input type="number" id="farmerScale_num" value="2.3" step="0.1" oninput="syncRange('farmerScale')">
+          </div>
+          <div class="row">
+            <label>Mirada (Facing):</label>
+            <select id="farmerFacing" onchange="updateRender()">
+              <option value="2">Frente (Front / Down)</option>
+              <option value="1">Derecha (Right)</option>
+              <option value="3">Izquierda (Left)</option>
+              <option value="0">Espalda (Back / Up)</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Voltear (Flip Sprite):</label>
+            <select id="farmerFlip" onchange="updateRender()">
+              <option value="false">No</option>
+              <option value="true">Sí (Horizontal)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-group-title">Emote del Jugador</div>
+          <div class="row">
+            <label>Tipo de Emote:</label>
+            <select id="farmerEmote" onchange="updateRender()">
+              <option value="0">Ninguno (None)</option>
+              <option value="1">❤️ Corazón (Heart)</option>
+              <option value="2">🎵 Música (Music)</option>
+              <option value="3">😊 Feliz (Happy)</option>
+              <option value="4">💤 Dormido (Zzz)</option>
+              <option value="5" selected>❗ Exclamación (!)</option>
+              <option value="6">❓ Pregunta (?)</option>
+              <option value="7">🎮 Gamepad</option>
+              <option value="8">🌸 Sonrojo (Blush)</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Emote Offset X:</label>
+            <input type="range" id="farmerEmoteX" min="-60" max="60" step="0.5" value="0" oninput="syncVal('farmerEmoteX')">
+            <input type="number" id="farmerEmoteX_num" value="0" step="0.5" oninput="syncRange('farmerEmoteX')">
+          </div>
+          <div class="row">
+            <label>Emote Offset Y:</label>
+            <input type="range" id="farmerEmoteY" min="-60" max="60" step="0.5" value="0" oninput="syncVal('farmerEmoteY')">
+            <input type="number" id="farmerEmoteY_num" value="0" step="0.5" oninput="syncRange('farmerEmoteY')">
+          </div>
+          <div class="row">
+            <label>Emote Escala:</label>
+            <input type="range" id="farmerEmoteScale" min="0.5" max="3" step="0.1" value="1.0" oninput="syncVal('farmerEmoteScale')">
+            <input type="number" id="farmerEmoteScale_num" value="1.0" step="0.1" oninput="syncRange('farmerEmoteScale')">
+          </div>
+        </div>
+      </div>
+
+      <!-- COMPANION TAB -->
+      <div id="companionTab" class="panel">
+        <div class="field-group">
+          <div class="field-group-title">Posición del Acompañante</div>
+          <div class="row">
+            <label>Tipo de Acompañante:</label>
+            <select id="companionType" onchange="updateRender()">
+              <option value="0">Auto (Spouse / Pet / Horse)</option>
+              <option value="1">Pareja (Spouse NPC / Player)</option>
+              <option value="2">Mascota (Perro/Gato/Tortuga)</option>
+              <option value="3">Caballo (Horse)</option>
+              <option value="4">Ninguno (None)</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Offset X:</label>
+            <input type="range" id="spouseX" min="-80" max="80" step="0.5" value="-29" oninput="syncVal('spouseX')">
+            <input type="number" id="spouseX_num" value="-29" step="0.5" oninput="syncRange('spouseX')">
+          </div>
+          <div class="row">
+            <label>Offset Y:</label>
+            <input type="range" id="spouseY" min="-60" max="60" step="0.5" value="0.5" oninput="syncVal('spouseY')">
+            <input type="number" id="spouseY_num" value="0.5" step="0.5" oninput="syncRange('spouseY')">
+          </div>
+          <div class="row">
+            <label>Escala (Scale):</label>
+            <input type="range" id="spouseScale" min="1" max="6" step="0.1" value="4.0" oninput="syncVal('spouseScale')">
+            <input type="number" id="spouseScale_num" value="4.0" step="0.1" oninput="syncRange('spouseScale')">
+          </div>
+          <div class="row">
+            <label>Mirada (Facing):</label>
+            <select id="spouseFacing" onchange="updateRender()">
+              <option value="2">Frente (Front / Down)</option>
+              <option value="1">Derecha (Right)</option>
+              <option value="3">Izquierda (Left)</option>
+              <option value="0">Espalda (Back / Up)</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Voltear (Flip Sprite):</label>
+            <select id="spouseFlip" onchange="updateRender()">
+              <option value="false">No</option>
+              <option value="true">Sí (Horizontal)</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Capa (Layer):</label>
+            <select id="spouseLayerFront" onchange="updateRender()">
+              <option value="false">Detrás del Jugador (Behind)</option>
+              <option value="true">Delante del Jugador (In Front)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-group-title">Emote del Acompañante</div>
+          <div class="row">
+            <label>Tipo de Emote:</label>
+            <select id="spouseEmote" onchange="updateRender()">
+              <option value="0">Ninguno (None)</option>
+              <option value="1" selected>❤️ Corazón (Heart)</option>
+              <option value="2">🎵 Música (Music)</option>
+              <option value="3">😊 Feliz (Happy)</option>
+              <option value="4">💤 Dormido (Zzz)</option>
+              <option value="5">❗ Exclamación (!)</option>
+              <option value="6">❓ Pregunta (?)</option>
+              <option value="7">🎮 Gamepad</option>
+              <option value="8">🌸 Sonrojo (Blush)</option>
+            </select>
+          </div>
+          <div class="row">
+            <label>Emote Offset X:</label>
+            <input type="range" id="spouseEmoteX" min="-60" max="60" step="0.5" value="0" oninput="syncVal('spouseEmoteX')">
+            <input type="number" id="spouseEmoteX_num" value="0" step="0.5" oninput="syncRange('spouseEmoteX')">
+          </div>
+          <div class="row">
+            <label>Emote Offset Y:</label>
+            <input type="range" id="spouseEmoteY" min="-60" max="60" step="0.5" value="0" oninput="syncVal('spouseEmoteY')">
+            <input type="number" id="spouseEmoteY_num" value="0" step="0.5" oninput="syncRange('spouseEmoteY')">
+          </div>
+          <div class="row">
+            <label>Emote Escala:</label>
+            <input type="range" id="spouseEmoteScale" min="0.5" max="3" step="0.1" value="1.0" oninput="syncVal('spouseEmoteScale')">
+            <input type="number" id="spouseEmoteScale_num" value="1.0" step="0.1" oninput="syncRange('spouseEmoteScale')">
+          </div>
+        </div>
+      </div>
+
+      <!-- JSON TAB -->
+      <div id="jsonTab" class="panel">
+        <div class="field-group">
+          <div class="field-group-title">Configuración Generada (config.json)</div>
+          <textarea id="jsonOutput" readonly></textarea>
+          <div class="actions-bar">
+            <button class="action-btn primary" onclick="copyJson()">📋 Copiar JSON</button>
+            <button class="action-btn" onclick="downloadJson()">💾 Descargar config.json</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('portraitCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Emote Sprites mapping (16x16)
+    const EMOTES = {
+      1: { name: 'heart', color: '#ff4b4b', icon: '❤️' },
+      2: { name: 'music', color: '#2b2b2b', icon: '🎵' },
+      3: { name: 'happy', color: '#2b2b2b', icon: '😊' },
+      4: { name: 'sleep', color: '#2b2b2b', icon: '💤' },
+      5: { name: 'exclamation', color: '#2b2b2b', icon: '❗' },
+      6: { name: 'question', color: '#2b2b2b', icon: '❓' },
+      7: { name: 'gamepad', color: '#2b2b2b', icon: '🎮' },
+      8: { name: 'blush', color: '#ff69b4', icon: '🌸' }
+    };
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function syncVal(id) {
+      document.getElementById(id + '_num').value = document.getElementById(id).value;
+      updateRender();
+    }
+
+    function syncRange(id) {
+      document.getElementById(id).value = document.getElementById(id + '_num').value;
+      updateRender();
+    }
+
+    function getConfig() {
+      return {
+        FarmerOffsetX: parseFloat(document.getElementById('farmerX').value) || 0,
+        FarmerOffsetY: parseFloat(document.getElementById('farmerY').value) || 0,
+        FarmerScale: parseFloat(document.getElementById('farmerScale').value) || 2.3,
+        FarmerFacingDirection: parseInt(document.getElementById('farmerFacing').value) || 2,
+        FarmerFlip: document.getElementById('farmerFlip').value === 'true',
+        FarmerEmote: parseInt(document.getElementById('farmerEmote').value) || 0,
+        FarmerEmoteOffsetX: parseFloat(document.getElementById('farmerEmoteX').value) || 0,
+        FarmerEmoteOffsetY: parseFloat(document.getElementById('farmerEmoteY').value) || 0,
+        FarmerEmoteScale: parseFloat(document.getElementById('farmerEmoteScale').value) || 1.0,
+
+        CompanionType: parseInt(document.getElementById('companionType').value) || 0,
+        SpouseOffsetX: parseFloat(document.getElementById('spouseX').value) || -29,
+        SpouseOffsetY: parseFloat(document.getElementById('spouseY').value) || 0.5,
+        SpouseScale: parseFloat(document.getElementById('spouseScale').value) || 4.0,
+        SpouseFacingDirection: parseInt(document.getElementById('spouseFacing').value) || 2,
+        SpouseFlip: document.getElementById('spouseFlip').value === 'true',
+        SpouseLayerFront: document.getElementById('spouseLayerFront').value === 'true',
+        SpouseEmote: parseInt(document.getElementById('spouseEmote').value) || 0,
+        SpouseEmoteOffsetX: parseFloat(document.getElementById('spouseEmoteX').value) || 0,
+        SpouseEmoteOffsetY: parseFloat(document.getElementById('spouseEmoteY').value) || 0,
+        SpouseEmoteScale: parseFloat(document.getElementById('spouseEmoteScale').value) || 1.0,
+        ForcedSeason: document.getElementById('seasonSelect').value
+      };
+    }
+
+    // Backgrounds
+    const bgImages = {};
+    ['spring', 'summer', 'fall', 'winter'].forEach(s => {
+      const img = new Image();
+      img.src = `backgrounds/${s}_bg.png`;
+      img.onload = () => updateRender();
+      bgImages[s] = img;
+    });
+
+    // Drawing Helpers
+    function drawEmoteBubble(ctx, x, y, emoteId, scale = 1.0) {
+      if (!emoteId || !EMOTES[emoteId]) return;
+      const em = EMOTES[emoteId];
+
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(scale, scale);
+
+      // Bubble background
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#222222';
+      ctx.lineWidth = 1.5;
+
+      ctx.beginPath();
+      ctx.ellipse(8, 7, 7.5, 6.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Tail
+      ctx.beginPath();
+      ctx.moveTo(6, 12);
+      ctx.lineTo(8, 16);
+      ctx.lineTo(10, 12);
+      ctx.closePath();
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(6, 12);
+      ctx.lineTo(8, 16);
+      ctx.lineTo(10, 12);
+      ctx.stroke();
+
+      // Inside icon
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(em.icon, 8, 7.5);
+
+      ctx.restore();
+    }
+
+    function drawPixelAvatar(ctx, x, y, isFarmer, facing, flip) {
+      ctx.save();
+      ctx.translate(x, y);
+      if (flip) {
+        ctx.scale(-1, 1);
+        ctx.translate(-16, 0);
+      }
+
+      if (isFarmer) {
+        // Cowboy Hat
+        ctx.fillStyle = '#5a341a';
+        ctx.fillRect(-5, 10, 26, 6);
+        ctx.fillRect(0, 2, 16, 10);
+        ctx.fillStyle = '#3a200f';
+        ctx.fillRect(0, 10, 16, 2);
+
+        // Face / Skin
+        ctx.fillStyle = '#f5cba7';
+        ctx.fillRect(2, 15, 12, 11);
+
+        // Eyes
+        if (facing !== 0) {
+          ctx.fillStyle = '#2c3e50';
+          if (facing === 2) {
+            ctx.fillRect(4, 18, 2, 3);
+            ctx.fillRect(10, 18, 2, 3);
+          } else if (facing === 1) {
+            ctx.fillRect(9, 18, 2, 3);
+          } else if (facing === 3) {
+            ctx.fillRect(3, 18, 2, 3);
+          }
+        }
+
+        // Shirt & Body
+        ctx.fillStyle = '#4a3728';
+        ctx.fillRect(0, 26, 16, 14);
+        ctx.fillStyle = '#2980b9';
+        ctx.fillRect(2, 38, 12, 12);
+      } else {
+        // Sophia / Companion (Pink hair)
+        ctx.fillStyle = '#ff8cb4';
+        ctx.fillRect(0, 12, 16, 16);
+        ctx.fillStyle = '#f5cba7';
+        ctx.fillRect(3, 16, 10, 10);
+
+        if (facing !== 0) {
+          ctx.fillStyle = '#7d5ba6';
+          if (facing === 2) {
+            ctx.fillRect(4, 18, 2, 3);
+            ctx.fillRect(9, 18, 2, 3);
+          } else if (facing === 1) {
+            ctx.fillRect(8, 18, 2, 3);
+          } else if (facing === 3) {
+            ctx.fillRect(3, 18, 2, 3);
+          }
+        }
+
+        // Dress
+        ctx.fillStyle = '#4a3f35';
+        ctx.fillRect(1, 26, 14, 16);
+      }
+
+      ctx.restore();
+    }
+
+    function updateRender() {
+      const cfg = getConfig();
+
+      // Clear Canvas
+      ctx.clearRect(0, 0, 256, 256);
+
+      // 1. Draw Background
+      const season = document.getElementById('seasonSelect').value;
+      if (bgImages[season] && bgImages[season].complete) {
+        ctx.drawImage(bgImages[season], 0, 0, 256, 256);
+      } else {
+        ctx.fillStyle = '#8b5a2b';
+        ctx.fillRect(0, 0, 256, 256);
+      }
+
+      // 2. Compute Coordinates
+      const sc = cfg.FarmerScale;
+      const hasSpouse = cfg.CompanionType !== 4;
+      const lx = ((256 / sc) - 64) / 2 + (hasSpouse ? 12 : 0) + cfg.FarmerOffsetX;
+      const ly = (36 / sc) + cfg.FarmerOffsetY;
+
+      const spX = lx + cfg.SpouseOffsetX;
+      const spY = ly + cfg.SpouseOffsetY;
+
+      // 3. Render Scaled Characters & Emotes
+      ctx.save();
+      ctx.scale(sc, sc);
+
+      const drawSpouse = () => {
+        if (!hasSpouse) return;
+        drawPixelAvatar(ctx, spX, spY, false, cfg.SpouseFacingDirection, cfg.SpouseFlip);
+        
+        // Companion Emote
+        if (cfg.SpouseEmote > 0) {
+          const emX = spX + 8 + cfg.SpouseEmoteOffsetX;
+          const emY = spY + 20 + cfg.SpouseEmoteOffsetY;
+          drawEmoteBubble(ctx, emX, emY, cfg.SpouseEmote, cfg.SpouseEmoteScale);
+        }
+      };
+
+      const drawFarmer = () => {
+        drawPixelAvatar(ctx, lx + 24, ly + 6, true, cfg.FarmerFacingDirection, cfg.FarmerFlip);
+
+        // Farmer Emote
+        if (cfg.FarmerEmote > 0) {
+          const emX = lx + 24 + cfg.FarmerEmoteOffsetX;
+          const emY = ly - 6 + cfg.FarmerEmoteOffsetY;
+          drawEmoteBubble(ctx, emX, emY, cfg.FarmerEmote, cfg.FarmerEmoteScale);
+        }
+      };
+
+      if (cfg.SpouseLayerFront) {
+        drawFarmer();
+        drawSpouse();
+      } else {
+        drawSpouse();
+        drawFarmer();
+      }
+
+      ctx.restore();
+
+      // Update JSON preview
+      document.getElementById('jsonOutput').value = JSON.stringify(cfg, null, 2);
+    }
+
+    // Drag and Drop on Canvas
+    let draggingTarget = null;
+    let dragStartX = 0;
+    let dragStartY = 0;
+
+    canvas.addEventListener('mousedown', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = (e.clientX - rect.left) / (rect.width / 256);
+      const clickY = (e.clientY - rect.top) / (rect.height / 256);
+
+      const cfg = getConfig();
+      const sc = cfg.FarmerScale;
+      const lx = ((256 / sc) - 64) / 2 + (cfg.CompanionType !== 4 ? 12 : 0) + cfg.FarmerOffsetX;
+      const ly = (36 / sc) + cfg.FarmerOffsetY;
+
+      // Check click targets in canvas
+      const fEmoteX = (lx + 24 + cfg.FarmerEmoteOffsetX) * sc;
+      const fEmoteY = (ly - 6 + cfg.FarmerEmoteOffsetY) * sc;
+
+      const sEmoteX = (lx + cfg.SpouseOffsetX + 8 + cfg.SpouseEmoteOffsetX) * sc;
+      const sEmoteY = (ly + cfg.SpouseOffsetY + 20 + cfg.SpouseEmoteOffsetY) * sc;
+
+      if (Math.hypot(clickX - fEmoteX, clickY - fEmoteY) < 24) {
+        draggingTarget = 'farmerEmote';
+      } else if (Math.hypot(clickX - sEmoteX, clickY - sEmoteY) < 24) {
+        draggingTarget = 'spouseEmote';
+      } else if (clickX < 128) {
+        draggingTarget = 'spouse';
+      } else {
+        draggingTarget = 'farmer';
+      }
+
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!draggingTarget) return;
+      const dx = (e.clientX - dragStartX) / 4;
+      const dy = (e.clientY - dragStartY) / 4;
+
+      if (draggingTarget === 'farmerEmote') {
+        document.getElementById('farmerEmoteX').value = parseFloat(document.getElementById('farmerEmoteX').value) + dx;
+        document.getElementById('farmerEmoteY').value = parseFloat(document.getElementById('farmerEmoteY').value) + dy;
+        syncVal('farmerEmoteX'); syncVal('farmerEmoteY');
+      } else if (draggingTarget === 'spouseEmote') {
+        document.getElementById('spouseEmoteX').value = parseFloat(document.getElementById('spouseEmoteX').value) + dx;
+        document.getElementById('spouseEmoteY').value = parseFloat(document.getElementById('spouseEmoteY').value) + dy;
+        syncVal('spouseEmoteX'); syncVal('spouseEmoteY');
+      } else if (draggingTarget === 'farmer') {
+        document.getElementById('farmerX').value = parseFloat(document.getElementById('farmerX').value) + dx;
+        document.getElementById('farmerY').value = parseFloat(document.getElementById('farmerY').value) + dy;
+        syncVal('farmerX'); syncVal('farmerY');
+      } else if (draggingTarget === 'spouse') {
+        document.getElementById('spouseX').value = parseFloat(document.getElementById('spouseX').value) + dx;
+        document.getElementById('spouseY').value = parseFloat(document.getElementById('spouseY').value) + dy;
+        syncVal('spouseX'); syncVal('spouseY');
+      }
+
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      updateRender();
+    });
+
+    window.addEventListener('mouseup', () => {
+      draggingTarget = null;
+    });
+
+    function copyJson() {
+      const text = document.getElementById('jsonOutput').value;
+      navigator.clipboard.writeText(text);
+      alert('¡Configuración JSON copiada al portapapeles!');
+    }
+
+    function downloadJson() {
+      const text = document.getElementById('jsonOutput').value;
+      const blob = new Blob([text], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'config.json';
+      a.click();
+    }
+
+    // Initial render
+    updateRender();
+  </script>
+</body>
+</html>
