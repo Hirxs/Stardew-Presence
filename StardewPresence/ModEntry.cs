@@ -292,7 +292,7 @@ namespace StardewPresence
             gmcm.AddBoolOption(ModManifest, () => config.EnableDynamicFarmerImage, val => { config.EnableDynamicFarmerImage = val; UpdateFarmerImage(); UpdatePresence(); }, () => "Enable Dynamic Portrait", () => "Renders farmer on seasonal background and displays it in Discord RPC");
             gmcm.AddBoolOption(ModManifest, () => config.UseCustomMapBackground, val => { config.UseCustomMapBackground = val; UpdateFarmerImage(); UpdatePresence(); }, () => "Use Custom Map Background", () => "Use custom captured map background instead of default seasonal art");
             gmcm.AddBoolOption(ModManifest, () => config.AutoUpdateCustomBackground, val => config.AutoUpdateCustomBackground = val, () => "Auto-Update Map Background", () => "Automatically updates the custom map background on new days and seasonal changes.");
-            gmcm.AddTextOption(ModManifest, () => config.FreeImageApiKey, val => config.FreeImageApiKey = val, () => "Freeimage.host API Key", () => "API key used to upload dynamic portraits");
+            gmcm.AddTextOption(ModManifest, () => config.MissingPortraitImageKey, val => config.MissingPortraitImageKey = val, () => "Placeholder Image Key", () => "Discord asset key used while portrait is loading or missing (default: missing_pfp)");
 
             // Main Menu
             gmcm.AddSectionTitle(ModManifest, () => "Main Menu Presence");

@@ -6,16 +6,8 @@ using StardewValley;
 
 namespace StardewPresence.Framework.Rendering
 {
-    /// <summary>
-    /// Unified rendering engine for farmer portrait cards and the live in-game portrait editor.
-    /// </summary>
     public static class FarmerSceneRenderer
     {
-        /// <summary>
-        /// Renders the farmer onto an isolated RenderTarget at 1:1 scale with PointClamp,
-        /// ensuring Fashion Sense, custom clothing, and non-standard textures render without blur,
-        /// out-of-bounds dye layer clamping, or lost scale matrices.
-        /// </summary>
         public static RenderTarget2D RenderFarmerToTexture(
             GraphicsDevice graphicsDevice,
             Farmer farmer,
@@ -89,10 +81,6 @@ namespace StardewPresence.Framework.Rendering
             return farmerRT;
         }
 
-        /// <summary>
-        /// Derives the appropriate facing direction (0=Up, 1=Right, 2=Down, 3=Left)
-        /// from the specified farmer frame and horizontal flip state.
-        /// </summary>
         public static int GetFacingDirectionFromFrame(int frame, bool flip = false)
         {
             int dir;
@@ -170,10 +158,6 @@ namespace StardewPresence.Framework.Rendering
             return dir;
         }
 
-        /// <summary>
-        /// Pre-renders isolated textures and draws the complete portrait scene onto the specified RenderTarget2D.
-        /// Handles background, companions, farmer, and emotes with proper layer ordering and zero GPU state conflicts.
-        /// </summary>
         public static void RenderSceneToTarget(
             GraphicsDevice graphicsDevice,
             RenderTarget2D target,

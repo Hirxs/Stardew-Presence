@@ -11,9 +11,6 @@ using StardewValley;
 
 namespace StardewPresence.Framework.Services
 {
-    /// <summary>
-    /// Coordinates generation, caching, and upload of dynamic farmer portrait cards.
-    /// </summary>
     public class FarmerImageGenerator : IDisposable
     {
         private readonly IModHelper helper;
@@ -58,9 +55,6 @@ namespace StardewPresence.Framework.Services
             backgroundCache.Clear();
         }
 
-        /// <summary>
-        /// Computes a unique appearance key based on season, gender, skin, hair, clothes, and colors.
-        /// </summary>
         public string GetAppearanceKey(Farmer farmer)
         {
             string season = !string.IsNullOrWhiteSpace(config.ForcedSeason) && !config.ForcedSeason.Equals("Auto", StringComparison.OrdinalIgnoreCase)
@@ -74,10 +68,6 @@ namespace StardewPresence.Framework.Services
             return $"{season}_{config.ForcedSeason}_{config.UseCustomMapBackground}_{config.CustomBackgroundMode}_{config.LastBackgroundCaptureTimestamp}_{farmer.UniqueMultiplayerID}_{farmer.IsMale}_{farmer.skin.Value}_{farmer.hair.Value}_{hairColor}_{farmer.shirt.Value}_{farmer.pants.Value}_{pantsColor}_{farmer.accessory.Value}_{farmer.hat.Value}_{farmer.boots.Value}_{spouseKey}_{config.CompanionType}_{config.ShowFarmer}_{config.ShowCompanion}_{config.ShowSpouse}_{config.ShowPet}_{config.FarmerOffsetX}_{config.FarmerOffsetY}_{config.FarmerScale}_{config.FarmerFrame}_{config.FarmerFlip}_{config.FarmerFacingDirection}_{config.FarmerEmote}_{config.SpouseOffsetX}_{config.SpouseOffsetY}_{config.SpouseScale}_{config.SpouseFrame}_{config.SpouseLayerFront}_{config.SpouseFlip}_{config.SpouseFacingDirection}_{config.SpouseEmote}_{config.PetOffsetX}_{config.PetOffsetY}_{config.PetScale}_{config.PetFrame}_{config.PetLayerFront}_{config.PetFlip}_{config.PetEmote}";
         }
 
-        /// <summary>
-        /// Checks if character appearance or season changed.
-        /// If so, renders the combined image and uploads it asynchronously.
-        /// </summary>
         public void CheckAndUpdate(Farmer farmer, Action<string> onUrlUpdated)
         {
             if (!config.EnableDynamicFarmerImage || farmer == null) return;
@@ -142,9 +132,6 @@ namespace StardewPresence.Framework.Services
             }
         }
 
-        /// <summary>
-        /// Loads seasonal or custom map background texture with memory caching.
-        /// </summary>
         public Texture2D? GetSeasonalBackgroundTexture(string season)
         {
             season = (season ?? "spring").ToLowerInvariant();
@@ -204,9 +191,6 @@ namespace StardewPresence.Framework.Services
             return null;
         }
 
-        /// <summary>
-        /// Renders the complete 256x256 farmer portrait card to a PNG byte array.
-        /// </summary>
         public byte[]? RenderFarmerCard(Farmer farmer)
         {
             if (farmer == null) return null;

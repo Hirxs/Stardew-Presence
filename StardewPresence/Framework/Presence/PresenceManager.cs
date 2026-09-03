@@ -7,9 +7,6 @@ using StardewValley.Menus;
 
 namespace StardewPresence.Framework.Presence
 {
-    /// <summary>
-    /// Coordinates Discord Rich Presence state generation for Title Screen and In-Game play.
-    /// </summary>
     public class PresenceManager
     {
         private readonly IModHelper helper;
@@ -88,8 +85,8 @@ namespace StardewPresence.Framework.Presence
             string details = GetActivityDetails();
             string state = PlayerStatusFormatter.GetPlayerInfoState(farmer, config, helper);
 
-            string largeImageKey = (config.EnableDynamicFarmerImage && !string.IsNullOrEmpty(dynamicImageUrl))
-                ? dynamicImageUrl
+            string largeImageKey = config.EnableDynamicFarmerImage
+                ? (!string.IsNullOrEmpty(dynamicImageUrl) ? dynamicImageUrl : config.MissingPortraitImageKey)
                 : config.DefaultLargeImageKey;
             string largeText = PlayerStatusFormatter.GetLargeImageTooltip(farmer, config, helper);
 

@@ -4,9 +4,6 @@ using StardewValley.Characters;
 
 namespace StardewPresence.Framework.Rendering
 {
-    /// <summary>
-    /// Handles discovery and resolution of farmer companions (Spouses, Pets, Horses).
-    /// </summary>
     public static class CompanionResolver
     {
         public static (NPC? spouseNpc, Farmer? spouseFarmer, NPC? petNpc) GetCompanions(Farmer farmer, ModConfig config)
@@ -161,10 +158,6 @@ namespace StardewPresence.Framework.Rendering
             return null;
         }
 
-        /// <summary>
-        /// Converts game facing direction (0=Up/Back, 1=Right, 2=Down/Front, 3=Left)
-        /// to standard NPC spritesheet row (Row 0=Down, Row 1=Right, Row 2=Up, Row 3=Left).
-        /// </summary>
         public static int GetNpcRowForDirection(int direction)
         {
             return direction switch

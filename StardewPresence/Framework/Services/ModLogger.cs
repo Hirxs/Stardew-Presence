@@ -2,10 +2,6 @@ using StardewModdingAPI;
 
 namespace StardewPresence.Framework.Services
 {
-    /// <summary>
-    /// Centralized logger that silences trace/info/debug console spam in public Release builds,
-    /// showing only warnings and errors unless built in Debug mode.
-    /// </summary>
     public static class ModLogger
     {
         public static bool IsDevMode

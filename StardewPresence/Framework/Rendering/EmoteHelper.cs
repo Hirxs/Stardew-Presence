@@ -2,15 +2,8 @@ using Microsoft.Xna.Framework;
 
 namespace StardewPresence.Framework.Rendering
 {
-    /// <summary>
-    /// Utility methods for resolving Stardew Valley emote source rectangles and scales.
-    /// </summary>
     public static class EmoteHelper
     {
-        /// <summary>
-        /// Returns the exact 16x16 source rectangle for the fully-formed emote frame (column 4, index 3)
-        /// from Game1.emoteSpriteSheet.
-        /// </summary>
         public static Rectangle GetEmoteSourceRect(int emoteId)
         {
             return emoteId switch

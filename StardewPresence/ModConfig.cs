@@ -20,9 +20,7 @@ namespace StardewPresence
         
         // Dynamic Farmer Portrait Generation & Image Hosting
         public bool EnableDynamicFarmerImage { get; set; } = true;
-        public string ImageHostService { get; set; } = "Custom"; // "Auto", "Freeimage", "Catbox", "ImgBB", "Custom"
-        public string FreeImageApiKey { get; set; } = "6d207e02198a847aa98d0a2a901485a5";
-        public string ImgBbApiKey { get; set; } = "";
+        public string MissingPortraitImageKey { get; set; } = "missing_pfp";
         public string CustomUploadUrl { get; set; } = "https://hyris-workshop-img-api.vercel.app/api/upload";
         public string CustomUploadAuthHeader { get; set; } = "";
         
@@ -159,9 +157,7 @@ namespace StardewPresence
             this.AutoUpdateCustomBackground = other.AutoUpdateCustomBackground;
             this.LastBackgroundCaptureTimestamp = other.LastBackgroundCaptureTimestamp;
 
-            this.ImageHostService = other.ImageHostService;
-            this.FreeImageApiKey = other.FreeImageApiKey;
-            this.ImgBbApiKey = other.ImgBbApiKey;
+            this.MissingPortraitImageKey = other.MissingPortraitImageKey;
             this.CustomUploadUrl = other.CustomUploadUrl;
             this.CustomUploadAuthHeader = other.CustomUploadAuthHeader;
             this.ShowQiCoins = other.ShowQiCoins;

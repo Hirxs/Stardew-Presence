@@ -8,9 +8,6 @@ using StardewValley.Tools;
 
 namespace StardewPresence.Framework.Presence
 {
-    /// <summary>
-    /// Formats in-game player state (money, Qi gems/coins, tooltips, weather, datetime).
-    /// </summary>
     public static class PlayerStatusFormatter
     {
         public static bool IsPlayerFishing()

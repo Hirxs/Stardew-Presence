@@ -7,9 +7,6 @@ using StardewValley.Locations;
 
 namespace StardewPresence.Framework.Presence
 {
-    /// <summary>
-    /// Handles discovery, privacy masking, SVE integration, and localization of game locations.
-    /// </summary>
     public static class LocationResolver
     {
         private static readonly Regex PascalCaseRegex1 = new("([a-z])([A-Z])", RegexOptions.Compiled);
