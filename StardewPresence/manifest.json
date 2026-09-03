@@ -1,0 +1,12 @@
+{
+  "Name": "Stardew Presence (BETA)",
+  "Author": "Hyris",
+  "Version": "0.2.0",
+  "Description": "The best Discord RPC mod for Stardew Valley! Shows your live save, custom farmer portrait, companions, and stats!~",
+  "UniqueID": "Hyris.StardewPresence",
+  "EntryDll": "StardewPresence.dll",
+  "MinimumApiVersion": "4.0.0",
+  "UpdateKeys": [
+    "Nexus:51515"
+  ]
+}
