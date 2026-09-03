@@ -13,7 +13,9 @@ Copy-Item (Join-Path $projectDir "bin\Release\net6.0\StardewDiscordRPC.dll") -De
 Copy-Item (Join-Path $projectDir "bin\Release\net6.0\StardewDiscordRPC.pdb") -Destination $stagingDir -Force
 Copy-Item (Join-Path $projectDir "manifest.json") -Destination $stagingDir -Force
 Copy-Item (Join-Path $projectDir "ui_layout.json") -Destination $stagingDir -Force
-Copy-Item (Join-Path $projectDir "assets") -Destination $stagingDir -Recurse -Force
+if (Test-Path (Join-Path $projectDir "assets")) {
+    Copy-Item (Join-Path $projectDir "assets") -Destination $stagingDir -Recurse -Force
+}
 Copy-Item (Join-Path $projectDir "i18n") -Destination $stagingDir -Recurse -Force
 
 # Unblock files

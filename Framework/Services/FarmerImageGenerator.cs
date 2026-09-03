@@ -185,19 +185,23 @@ namespace StardewDiscordRPC.Framework.Services
                 }
             }
 
-            string bgPath = $"assets/backgrounds/{season}_bg.png";
-            try
+            string staticBgFile = Path.Combine(helper.DirectoryPath, "assets", "backgrounds", $"{season}_bg.png");
+            if (File.Exists(staticBgFile))
             {
-                var tex = helper.ModContent.Load<Texture2D>(bgPath);
-                backgroundCache[cacheKey] = tex;
-                return tex;
+                try
+                {
+                    var tex = helper.ModContent.Load<Texture2D>($"assets/backgrounds/{season}_bg.png");
+                    backgroundCache[cacheKey] = tex;
+                    return tex;
+                }
+                catch (Exception ex)
+                {
+                    ModLogger.LogTrace(monitor, $"[StardewPresence] Could not load background '{staticBgFile}': {ex.Message}");
+                }
             }
-            catch (Exception ex)
-            {
-                ModLogger.LogTrace(monitor, $"[StardewPresence] Could not load background '{bgPath}': {ex.Message}");
-                backgroundCache[cacheKey] = null;
-                return null;
-            }
+
+            backgroundCache[cacheKey] = null;
+            return null;
         }
 
         /// <summary>
