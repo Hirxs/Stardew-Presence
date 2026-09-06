@@ -65,5 +65,8 @@ And all this without requiring dependencies!, This mod also includes features su
   - Improved companion and pet rendering, scaling, and floating emotes
   - Optimized image generation and SHA-256 caching to reduce bandwidth
   - Removed obsolete static background assets
+- 0.2.5
+  - It is now possible to disable the "how to use the mod, F8" tip from the mod config
+  - An update notifier was added
 
 ![](https://staticdelivery.nexusmods.com/mods/1303/images/51515/51515-1788309170-512814675.png)
